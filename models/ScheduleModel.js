@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const classScheduleSchema = new Schema({
-   meetingId: {
-        type: String,
-        required: true
-      },
+  meetingId: {
+    type: String,
+    required: true
+  },
   className: {
     type: String,
     required: true
@@ -15,13 +15,11 @@ const classScheduleSchema = new Schema({
     required: true
   },
   teacher: {
-    type: Schema.Types.ObjectId,
-    ref: 'Teacher',
+    type: String,  // Changed from ObjectId to String
     required: true
   },
   students: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Student'
+    type: String  // Changed from ObjectId to String
   }],
   schedule: {
     date: {
