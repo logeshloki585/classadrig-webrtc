@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const http = require("http");
 const app = express();
 
@@ -11,6 +12,24 @@ const io = socket(server);
 
 const classScheduleRoutes = require('./routes/classScheduleRoutes');
 
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://classadrig.vercel.app'
+];
+
+const corsOptions = {
+    origin: function(origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            // Allow the request if the origin is in the allowed list or if it's a request without origin (e.g., from Postman)
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use('/api', classScheduleRoutes);
 
