@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const classScheduleController = require('../controller/Controller');
+const classScheduleController = require('../Controller/Controller');
 
 // POST: Create a new class schedule
 router.post('/class-schedules', classScheduleController.createClassSchedule);
