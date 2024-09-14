@@ -34,7 +34,6 @@ app.use(bodyParser.json());
 app.use('/api', classScheduleRoutes);
 
 const users = {};
-
 const socketToRoom = {};
 
 io.on('connection', socket => {
@@ -63,6 +62,13 @@ io.on('connection', socket => {
         io.to(payload.callerID).emit('receiving returned signal', { signal: payload.signal, id: socket.id });
     });
 
+    socket.on('screen sharing', payload => {
+        io.to(payload.roomId).emit('screen sharing update', {
+            peerID: socket.id,
+            screenStreamID: payload.streamID
+        });
+    });
+
     socket.on('disconnect', () => {
         const roomID = socketToRoom[socket.id];
         let room = users[roomID];
@@ -70,14 +76,13 @@ io.on('connection', socket => {
             room = room.filter(id => id !== socket.id);
             users[roomID] = room;
         }
+        // Notify the room that the user has left
+        io.to(roomID).emit('user left', socket.id);
     });
-
 });
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-server.listen(process.env.PORT || 8000, () => console.log('server is running on port 8000'));
-
-
+server.listen(process.env.PORT || 8000, () => console.log('Server is running on port 8000'));
